@@ -54,16 +54,14 @@ public class DingdingServiceImpl implements DingdingService {
 
     @Override
     public void start() {
-        String pic = "http://icon-park.com/imagefiles/loading7_gray.gif";
-        String title = String.format("%s%s开始构建", build.getProject().getDisplayName(), build.getDisplayName());
-        String content = String.format("项目[%s%s]开始构建", build.getProject().getDisplayName(), build.getDisplayName());
-
+        String pic = "http://www.qqzhi.com/uploadpic/2014-09-18/125457131.jpg";
+        String title = String.format("%s%s开始构建", build.getProject().getDisplayName(), build.getDisplayName() + "分支：请关注成功/失败通知\n");
+        String content = String.format("项目[%s%s]开始构建", build.getProject().getDisplayName(), build.getDisplayName() + "分支：请关注成功/失败通知");
         String link = getBuildUrl();
         if (onStart) {
             logger.info("send link msg from " + listener.toString());
             sendLinkMessage(link, content, title, pic);
         }
-
     }
 
     private String getBuildUrl() {
@@ -76,10 +74,17 @@ public class DingdingServiceImpl implements DingdingService {
 
     @Override
     public void success() {
-        String pic = "http://icons.iconarchive.com/icons/paomedia/small-n-flat/1024/sign-check-icon.png";
-        String title = String.format("%s%s构建成功", build.getProject().getDisplayName(), build.getDisplayName());
-        String content = String.format("项目[%s%s]构建成功, summary:%s, duration:%s", build.getProject().getDisplayName(), build.getDisplayName(), build.getBuildStatusSummary().message, build.getDurationString());
-
+        String branch = null;
+        try {
+            branch = build.getEnvironment().get("GIT_BRANCH", "未知分支");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        String pic = "http://www.qqzhi.com/uploadpic/2015-01-22/035257809.jpg";
+        String title = String.format("%s%s构建成功", build.getProject().getDisplayName(), build.getDisplayName() + "分支：" + branch);
+        String content = String.format("项目[%s%s]构建成功, 状态:%s, 耗时:%s", build.getProject().getDisplayName(), build.getDisplayName() + "分支：" + branch, build.getBuildStatusSummary().message, build.getDurationString());
         String link = getBuildUrl();
         logger.info(link);
         if (onSuccess) {
@@ -90,9 +95,17 @@ public class DingdingServiceImpl implements DingdingService {
 
     @Override
     public void failed() {
-        String pic = "http://www.iconsdb.com/icons/preview/soylent-red/x-mark-3-xxl.png";
-        String title = String.format("%s%s构建失败", build.getProject().getDisplayName(), build.getDisplayName());
-        String content = String.format("项目[%s%s]构建失败, summary:%s, duration:%s", build.getProject().getDisplayName(), build.getDisplayName(), build.getBuildStatusSummary().message, build.getDurationString());
+        String branch = null;
+        try {
+            branch = build.getEnvironment().get("GIT_BRANCH", "未知分支");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        String pic = "http://www.qqzhi.com/uploadpic/2015-01-22/035258591.jpg";
+        String title = String.format("%s%s构建失败", build.getProject().getDisplayName(), build.getDisplayName() + "分支：" + branch);
+        String content = String.format("项目[%s%s]构建失败, 状态:%s, 耗时:%s", build.getProject().getDisplayName(), build.getDisplayName() + "分支：" + branch, build.getBuildStatusSummary().message, build.getDurationString());
 
         String link = getBuildUrl();
         logger.info(link);
@@ -104,9 +117,17 @@ public class DingdingServiceImpl implements DingdingService {
 
     @Override
     public void abort() {
+        String branch = null;
+        try {
+            branch = build.getEnvironment().get("GIT_BRANCH", "未知分支");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         String pic = "http://www.iconsdb.com/icons/preview/soylent-red/x-mark-3-xxl.png";
-        String title = String.format("%s%s构建中断", build.getProject().getDisplayName(), build.getDisplayName());
-        String content = String.format("项目[%s%s]构建中断, summary:%s, duration:%s", build.getProject().getDisplayName(), build.getDisplayName(), build.getBuildStatusSummary().message, build.getDurationString());
+        String title = String.format("%s%s构建中断", build.getProject().getDisplayName(), build.getDisplayName() + "分支：" + branch);
+        String content = String.format("项目[%s%s]构建中断, 状态:%s, 耗时:%s", build.getProject().getDisplayName(), build.getDisplayName() + "分支：" + branch, build.getBuildStatusSummary().message, build.getDurationString());
 
         String link = getBuildUrl();
         logger.info(link);
